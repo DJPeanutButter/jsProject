@@ -34,25 +34,20 @@ var wWindow,
         },INTERVAL_DELAY);
     },
     resize:function(){
-      var e = window,
-          a = 'inner';
+      var container = window,
+          prefix    = 'inner';
 
       //check for IE because some people make poor decisions
       if (!('innerWidth' in window)){
-          a = 'client';
-          e = document.documentElement || document.body;
+          container = 'client';
+          prefix    = document.documentElement || document.body;
       }
 
-      var p = document.body;
-      var style = p.currentStyle || window.getComputedStyle(p);
+      var tag   = document.body,
+          style = tag.currentStyle || window.getComputedStyle(tag);
 
-      console.log(style.marginTop);
-      console.log(style.marginLeft);
-      console.log(style.marginRight);
-      console.log(style.marginBottom);
-
-      this.field.width  = wWindow = e[a+'Width'] - parseInt (style.marginLeft) - parseInt (style.marginRight);
-      this.field.height = hWindow = e[a+'Height']- parseInt (style.marginTop)  - parseInt (style.marginBottom);
+      this.field.width  = wWindow = container[prefix+'Width'] - parseInt (style.marginLeft) - parseInt (style.marginRight);
+      this.field.height = hWindow = container[prefix+'Height']- parseInt (style.marginTop)  - parseInt (style.marginBottom);
     }
   }
 
