@@ -39,16 +39,15 @@ var wWindow,
     },
     resize:function(){
       var container = window,
-          prefix    = 'inner';
+          prefix    = 'inner',
+          tag       = document.body,
+          style     = tag.currentStyle || window.getComputedStyle(tag);
 
       /* check for IE because some people make poor decisions */
       if (!('innerWidth' in window)){
           prefix    = 'client';
           container = document.documentElement || document.body;
       }
-
-      var tag   = document.body,
-          style = tag.currentStyle || window.getComputedStyle(tag);
 
       this.field.width  = wWindow = container[prefix+'Width'] - parseInt (style.marginLeft) - parseInt (style.marginRight);
       this.field.height = hWindow = container[prefix+'Height']- parseInt (style.marginTop)  - parseInt (style.marginBottom);
