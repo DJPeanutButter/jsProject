@@ -43,8 +43,8 @@ var wWindow,
 
       /* check for IE because some people make poor decisions */
       if (!('innerWidth' in window)){
-          container = 'client';
-          prefix    = document.documentElement || document.body;
+          prefix    = 'client';
+          container = document.documentElement || document.body;
       }
 
       var tag   = document.body,
