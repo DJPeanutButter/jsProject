@@ -3,6 +3,17 @@
     <title>jsProject</title>
   </head>
   <body>
+    <!--
+     !-- Order matters here. VisibleObject.js has to be called
+     !-- before PhysicalObject.js because PhysicalObject.js calls
+     !-- a function that is defined in VisibleObject.js, and
+     !-- jsProject.js has to be last because it calls functions
+     !-- that we're defining in the other files. I'm treating
+     !-- these other files the same way you would source files
+     !-- in C++ simply because that's what I'm used to.
+     !-->
+    <script src="VisibleObject.js"></script>
+    <script src="PhysicalObject.js"></script>
     <script src="jsProject.js"></script>
   </body>
 </html>

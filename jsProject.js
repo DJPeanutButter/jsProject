@@ -22,7 +22,9 @@
  *   const BACKGROUND_COLOR = "#FFFF00";
  *   const INBTERVAL_DELAY  = 20;
  */
+
 const BACKGROUND_COLOR  = "#FFFF00",
+      BACKGROUND_IMAGE_URL = "";
       INTERVAL_DELAY    = 20;
 
 /* Reference Variables *//*
@@ -31,7 +33,11 @@ const BACKGROUND_COLOR  = "#FFFF00",
  */
 var wWindow,
     hWindow,
-    mainLoopInt;  //Can't forget the ; on the last one!
+    mainLoopInt,
+    scriptTest;
+    
+/* USED FOR DEMONSTRATION */
+var myObject = CreatePhysicalObject (10,10,0,0,0.1,0,"red",{},{x:10},{x:10,y:10},{y:10},[]);
 
 /* Object Variables */
 
@@ -103,16 +109,18 @@ var wWindow,
         document.body.appendChild (this.field);
         
         /*
-         * DOM way of changing the CSS background-color style for game.field and document.body
-         * using our constant BACKGROUND_COLOR. Don't change the value here, if you want to
-         * change the background color of the game, change it at the top of the file, that's
-         * what those constants are there for.
+         * DOM way of changing the CSS background-color style for document.body using our
+         * constant BACKGROUND_COLOR. Don't change the value here, if you want to change
+         * the background color of the game, change it at the top of the file, that's what
+         * those constants are there for.
          */
-        this.field.style.backgroundColor = document.body.style.backgroundColor = BACKGROUND_COLOR;
+        document.body.style.backgroundColor = BACKGROUND_COLOR;
+        // document.body.style.backgroundImage = 'url(BACKGROUND_IMAGE_URL)';
         
-        /* Stores the setInterval function in the mainLoopInt global variable. setInterval
-         * let's call a function at a specified interval indefinitely. This is how we're going
-         * to have our main game loop execute. The prototype for setInterval is
+        /*
+         * Stores the setInterval function in the mainLoopInt global variable. setInterval
+         * let's us call a function at a specified interval indefinitely. This is how we're
+         * going to have our main game loop execute. The prototype for setInterval is
          *
          *   setInterval(functionName,timeInMiliseconds)
          *
@@ -129,7 +137,8 @@ var wWindow,
         },INTERVAL_DELAY);
       },
       resize: function(){
-        /* check for IE because some people make poor decisions.
+        /*
+         * Check for IE because some people make poor decisions.
          *
          * I really like this part. It was in a few different pieces that I found in different
          * places. The first bit, which gives the size of the view port from the browser, looked
@@ -158,7 +167,7 @@ var wWindow,
          *   var p     = document.body;
          *   var style = p.currentStyle || window.getComputedStyle(p);
          *
-         * This one does the something similar. Looking at it now, I guess I could shorten it to 
+         * This one does something similar. Looking at it now, I guess I could shorten it to 
          *
          *   var style = document.body.currentStyle || window.getComputedStyle(document.body);
          *
@@ -200,80 +209,24 @@ window.onload   = function (){
   game.load();
 };
 
-/* This gives control to the game.resize method. */
+/* This gives control to the game.resize method when the window is resized. */
 document.body.onresize = function (){
   game.resize();
 };
 
-/* Function Declarations */
+/* Function Declarations *//*
+ *
+ * This is where we define our mainLoop function, which takes one parameter - cvs.
+ * All we're doing in the first line below is defining a variable, ctx, as the context
+ * of the canvas, cvs. The context is the part of the canvas that has methods that 
+ * facilitate graphics. It's the part of the canvas that we'll actually be drawing to.
+ * The second line of the code below is just erasing everything on the context, leaving
+ * it transparent so that the background of document.body is visible.
+ */
 function mainLoop(cvs){
     var ctx = cvs.getContext("2d");
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-}
-
-function VisibleObject (){
-  /* Find the length of the argument list and break it apart into an array */
-  var args = Array.from(arguments);
-  var args = [...arguments];
-  var nPrim,nCur=0;
-  
-  /* Check for 'new' keyword and sends a warning if it's missing */
-  if (!(this instanceof VisibleObject)){
-    console.warn ("Constructor for VisibleObject called as a function (did you forget 'new'?)");
-    return new VisibleObject (...args);
-  }
-  
-  /*
-   * Count number of primitive parameters, make sure there's at least
-   * one object or add one if there is none.
-   */
-  for (nPrim=0;typeof args[nPrim]!='object';nPrim++)
-    if (nPrim===args.length){
-      console.warn ("VisibleObject requires at least one Point object in parameter list");
-      args[args.length] = {x:0,y:0};
-      break;
-    }
-  
-  /*
-   * Check that all values of the points array have both an x and y property that is 
-   * a number, and sets the property to 0 if it is not defined as a number.
-   */
-  for (var i=nPrim;i<args.length;i++){
-    if (typeof args[nPrim].x !== 'number'){
-      console.warn ("VisibleObject requires x values to be numbers for all Points");
-      args[nPrim].x = 0;
-    }
-    if (typeof args[nPrim].y !== 'number'){
-      console.warn ("VisibleObject requires y values to be numbers for all Points");
-      args[nPrim].y = 0;
-    }
-  }
-  
-  /*
-   * Uses the primitive values passed as parameters by copying
-   * them from the args array to their respective properties.
-   */
-  this.x      = (nPrim>nCur?args[nCur++]:0);
-  this.y      = (nPrim>nCur?args[nCur++]:0);
-  this.dX     = (nPrim>nCur?args[nCur++]:0);
-  this.dY     = (nPrim>nCur?args[nCur++]:0);
-  this.ddX    = (nPrim>nCur?args[nCur++]:0);
-  this.ddY    = (nPrim>nCur?args[nCur++]:0);
-  this.color  = (nPrim>nCur?args[nCur++]:0);
-  this.points = args.splice(nPrim,args.length-nPrim);
-  
-  /*
-   * Draws a convex shape described by the points array 
-   * to the Context (ctx) of a Canvas element
-   */
-  this.draw   = function(ctx){
-      ctx.beginPath();
-      ctx.moveTo(this.x+this.points[0].x,this.y+this.points[0].y);
-      
-      for (i=1;i<this.points.length;i++)
-          ctx.lineTo(this.x+this.points[i].x,this.y+this.points[i].y);
-      
-      ctx.fillStyle = this.color;
-      ctx.fill ();
-  }
+    ctx.clearRect(0,0,wWindow,hWindow);
+    
+    myObject = myObject.getNextInstance ();
+    myObject.draw (ctx);
 }
