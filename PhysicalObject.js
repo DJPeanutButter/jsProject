@@ -48,3 +48,47 @@ function createPhysicalObject(){
                             args.splice(nPrim,args.length-nPrim-1),
                             args[args.length-1]);
 }
+
+function isInsideTriangle (point, triangle){
+  console.time ("isInsideTriangle");
+  if (typeof point.x        === 'number' &&
+      typeof point.y        === 'number' &&
+      typeof triangle[0].x  === 'number' &&
+      typeof triangle[0].y  === 'number' &&
+      typeof triangle[1].x  === 'number' &&
+      typeof triangle[1].y  === 'number' &&
+      typeof triangle[2].x  === 'number' &&
+      typeof triangle[2].y  === 'number'){
+    /*
+     * This is a technology as far as I'm concerned:  I have
+     * no clue how/why, but it appears to work.
+     *
+     *   Reference:
+     *     https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+     */
+    var s = triangle[0].y * triangle[2].x
+          - triangle[0].x * triangle[2].y
+          +(triangle[2].y - triangle[0].y) * point.x
+          +(triangle[0].x - triangle[2].x) * point.y;
+    var t = triangle[0].x * triangle[1].y
+          - triangle[0].y * triangle[1].x
+          +(triangle[0].y - triangle[1].y) * point.x
+          +(triangle[1].x - triangle[0].x) * point.y;
+    
+    if ((s<0)!==(t<0))
+      return false;
+    
+    var A =-triangle[1].y * triangle[2].x
+          + triangle[0].y *(triangle[2].x - triangle[1].x)
+          + triangle[0].x *(triangle[1].y - triangle[2].y)
+          + triangle[1].x * triangle[2].y;
+    
+    if (A < 0.0){
+          s = -s;
+          t = -t;
+          A = -A;
+    }
+    return s > 0 && t > 0 && s + t <= A;
+  }
+  return false;
+}
