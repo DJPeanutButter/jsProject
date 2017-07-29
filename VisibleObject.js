@@ -28,14 +28,21 @@ function VisibleObject (x,y,dX,dY,ddX,ddY,color,points){
    * to the Context of a Canvas element
    */
   this.draw   = function(context){
+      context.fillStyle = this.color;
       context.beginPath();
       context.moveTo(this.x+this.points[0].x,this.y+this.points[0].y);
       
-      for (i=1;i<this.points.length;i++)
+      for (i=1;i<this.points.length;i++){
+          if (i>1){
+            context.moveTo (this.x + this.points[i-2].x,
+                            this.y + this.points[i-2].y);
+            context.lineTo (this.x + this.points[i-1].x,
+                            this.y + this.points[i-1].y);
+          }
           context.lineTo(this.x+this.points[i].x,this.y+this.points[i].y);
-      
-      context.fillStyle = this.color;
-      context.fill ();
+          if (i>1)
+            context.fill ();
+      }
   }
 }
 

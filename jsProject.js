@@ -34,8 +34,8 @@ var wWindow,
     downArrowUp;
 
 /* TESTING isInsideTriangle function */
-var voTriangle  = createPhysicalObject (10,10,0,0,0,0,"red",{},{x:60,y:13},{x:27,y:113},[]);
-var voPoint     = createPhysicalObject (300,200,0,0,0,0,"#c8c8c8",{},{x:5},{x:5,y:5},{y:5},[]);
+var poPolygon  = createPhysicalObject (10,10,0,0,0,0,"red",{},{x:60,y:13},{x:27,y:113},{x: 90,y: 99}, []);
+var poPoint     = createPhysicalObject (300,200,0,0,0,0,"#c8c8c8",{},{x:5},{y:5},{x:5,y:5},[]);
 
 /* Object Variables */
     game = {
@@ -69,6 +69,7 @@ var voPoint     = createPhysicalObject (300,200,0,0,0,0,"#c8c8c8",{},{x:5},{x:5,
 
 /* Function Assignments */
 window.onload = function (){
+  document.body.style.margin = "0px";
   game.resize();
   game.load();
 };
@@ -111,80 +112,41 @@ function mainLoop(canvas){
   var context = canvas.getContext("2d");
   context.clearRect(0,0,wWindow,hWindow);
   
-  /* TESTING isInsideTriangle function */
-  voPoint = voPoint.getNextInstance ();
-  voTriangle = voTriangle.getNextInstance ();
+  /* TESTING modulated hitTest */
+  poPoint = poPoint.getNextInstance ();
+  poPolygon = poPolygon.getNextInstance ();
   
-  voTriangle.draw (context);
-  voPoint.draw    (context);
+  poPolygon.draw (context);
+  poPoint.draw   (context);
   
-  if (isInsideTriangle ({
-      x: voPoint.x + voPoint.points[0].x,
-      y: voPoint.y + voPoint.points[0].y
-    }, [{
-      x: voTriangle.x + voTriangle.points[0].x,
-      y: voTriangle.y + voTriangle.points[0].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[1].x,
-      y: voTriangle.y + voTriangle.points[1].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[2].x,
-      y: voTriangle.y + voTriangle.points[2].y,
-    }]) || isInsideTriangle ({
-      x: voPoint.x + voPoint.points[1].x,
-      y: voPoint.y + voPoint.points[1].y
-    }, [{
-      x: voTriangle.x + voTriangle.points[0].x,
-      y: voTriangle.y + voTriangle.points[0].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[1].x,
-      y: voTriangle.y + voTriangle.points[1].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[2].x,
-      y: voTriangle.y + voTriangle.points[2].y,
-    }]) || isInsideTriangle ({
-      x: voPoint.x + voPoint.points[2].x,
-      y: voPoint.y + voPoint.points[2].y
-    }, [{
-      x: voTriangle.x + voTriangle.points[0].x,
-      y: voTriangle.y + voTriangle.points[0].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[1].x,
-      y: voTriangle.y + voTriangle.points[1].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[2].x,
-      y: voTriangle.y + voTriangle.points[2].y,
-    }]) || isInsideTriangle ({
-      x: voPoint.x + voPoint.points[3].x,
-      y: voPoint.y + voPoint.points[3].y
-    }, [{
-      x: voTriangle.x + voTriangle.points[0].x,
-      y: voTriangle.y + voTriangle.points[0].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[1].x,
-      y: voTriangle.y + voTriangle.points[1].y,
-    }, {
-      x: voTriangle.x + voTriangle.points[2].x,
-      y: voTriangle.y + voTriangle.points[2].y,
-    }]))
-    voTriangle.color = "blue";
+  /* Collision Detection (In-Progress) */
+  if (poPoint.hitTest (poPolygon))
+    poPolygon.color = "blue";
   else
-    voTriangle.color = "red";
+    poPolygon.color = "red";
   
+  /* X-Axis Movement */
   if (leftArrowDown && !rightArrowDown)
-    voPoint.dX = Math.max (voPoint.dX-0.1,-5);
+    poPoint.dX = Math.max (poPoint.dX-0.1,-5);
   else if (rightArrowDown && !leftArrowDown)
-    voPoint.dX = Math.min (voPoint.dX+0.1,5);
-  else if (voPoint.dX !== 0)
-    voPoint.dX += voPoint.dX>0?-0.01:0.01;
+    poPoint.dX = Math.min (poPoint.dX+0.1,5);
+  /* Slow down if nothing is being pressed */
+  else if (poPoint.dX !== 0)
+    poPoint.dX += poPoint.dX>0?-0.01:0.01;
   
+  /* Y-Axis Movement */
   if (upArrowDown && !downArrowDown)
-    voPoint.dY = Math.max (voPoint.dY-0.1,-5);
+    poPoint.dY = Math.max (poPoint.dY-0.1,-5);
   else if (downArrowDown && !upArrowDown)
-    voPoint.dY = Math.min (voPoint.dY+0.1,5);
-  else if (voPoint.dY !== 0)
-    voPoint.dY += voPoint.dY>0?-0.01:0.01;
+    poPoint.dY = Math.min (poPoint.dY+0.1,5);
+  /* Slow down if nothing is being pressed */
+  else if (poPoint.dY !== 0)
+    poPoint.dY += poPoint.dY>0?-0.01:0.01;
   
-  voPoint.x %= wWindow;
-  voPoint.y %= hWindow;
+  /* I'm bouncing off the walls again (whoa-oh) */
+  if (poPoint.x >= wWindow || poPoint.x <= 0)
+    poPoint.dX *= -1;
+  
+  if (poPoint.y >= hWindow || poPoint.y <= 0)
+    poPoint.dY *= -1;
 }

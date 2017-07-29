@@ -2,7 +2,26 @@ function PhysicalObject (x,y,dX,dY,ddX,ddY,color,points,otherObjects){
   VisibleObject.call (this,x,y,dX,dY,ddX,ddY,color,points);
   this.otherObjects = otherObjects;
   
-  this.getNextInstance = function(){
+  this.getPoint = function (i){
+    return {
+      x: this.x + this.points[i].x,
+      y: this.y + this.points[i].y
+    };
+  };
+  
+  this.hitTest = function (otherObject){
+    for (var i=0;i<this.points.length;i++)
+      for (var j=2;j<otherObject.points.length;j++)
+        if (isInsideTriangle (this.getPoint (i),
+                             [otherObject.getPoint (j-2),
+                              otherObject.getPoint (j-1),
+                              otherObject.getPoint (j)]))
+        return true;
+    
+    return false;
+  };
+  
+  this.getNextInstance = function (){
     return new PhysicalObject(this.x+this.dX+this.ddX,
                               this.y+this.dY+this.ddY,
                               this.dX+this.ddX,
@@ -17,7 +36,7 @@ function PhysicalObject (x,y,dX,dY,ddX,ddY,color,points,otherObjects){
   /* TODO: Create A Priori collision testing (lots of math) */
 }
 
-function createPhysicalObject(){
+function createPhysicalObject (){
   /* Find the length of the argument list and break it apart into an array */
   var args = Array.from(arguments);
   var args = [...arguments];
@@ -38,19 +57,18 @@ function createPhysicalObject(){
    * Feeds the primitive values passed as parameters into the
    * constructor for VisibleObject
    */
-  return new PhysicalObject((nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            args.splice(nPrim,args.length-nPrim-1),
-                            args[args.length-1]);
+  return new PhysicalObject ((nPrim>nCur?args[nCur++]:0),
+                             (nPrim>nCur?args[nCur++]:0),
+                             (nPrim>nCur?args[nCur++]:0),
+                             (nPrim>nCur?args[nCur++]:0),
+                             (nPrim>nCur?args[nCur++]:0),
+                             (nPrim>nCur?args[nCur++]:0),
+                             (nPrim>nCur?args[nCur++]:0),
+                             args.splice(nPrim,args.length-nPrim-1),
+                             args[args.length-1]);
 }
 
 function isInsideTriangle (point, triangle){
-  console.time ("isInsideTriangle");
   if (typeof point.x        === 'number' &&
       typeof point.y        === 'number' &&
       typeof triangle[0].x  === 'number' &&
@@ -75,7 +93,7 @@ function isInsideTriangle (point, triangle){
           +(triangle[0].y - triangle[1].y) * point.x
           +(triangle[1].x - triangle[0].x) * point.y;
     
-    if ((s<0)!==(t<0))
+    if (s < 0 !== t < 0)
       return false;
     
     var A =-triangle[1].y * triangle[2].x
@@ -83,7 +101,7 @@ function isInsideTriangle (point, triangle){
           + triangle[0].x *(triangle[1].y - triangle[2].y)
           + triangle[1].x * triangle[2].y;
     
-    if (A < 0.0){
+    if (A < 0){
           s = -s;
           t = -t;
           A = -A;
