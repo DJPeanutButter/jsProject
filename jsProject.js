@@ -108,7 +108,6 @@ document.body.onresize = function (){
 
 /* Function Declarations */
 function mainLoop(canvas){
-  console.time ("mainLoop");
   var context = canvas.getContext("2d");
   context.clearRect(0,0,wWindow,hWindow);
   
@@ -188,5 +187,4 @@ function mainLoop(canvas){
   
   voPoint.x %= wWindow;
   voPoint.y %= hWindow;
-  console.timeEnd ("mainLoop");
 }
