@@ -1,10 +1,6 @@
-function VisibleObject (x,y,dX,dY,ddX,ddY,color,points){
+function VisibleObject (x, y, color, points){
   this.x      = x;
   this.y      = y;
-  this.dX     = dX;
-  this.dY     = dY;
-  this.ddX    = ddX;
-  this.ddY    = ddY;
   this.color  = color;
   
   /*
@@ -68,10 +64,6 @@ function createVisibleObject(){
    * constructor for VisibleObject
    */
   return new VisibleObject ((nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
-                            (nPrim>nCur?args[nCur++]:0),
                             (nPrim>nCur?args[nCur++]:0),
                             (nPrim>nCur?args[nCur++]:0),
                             args.splice(nPrim,args.length-nPrim));

@@ -1,0 +1,99 @@
+
+1. Variables
+  A. Variable Naming
+
+      First and foremost, variable names should be descriptive. You should be
+    able to look at somebody else code and realize right away if a variable
+    stores a number, string, boolean, object, etc...
+
+        // Bad
+        var a = "John",
+            b = "Doe",
+            c = 27,
+            d = false;
+        
+        // Good
+        var firstName = "John",
+            lastName  = "Doe",
+            age       = 27,
+            isMarried = false;
+
+      Variables should be nouns, not verbs. Variables should be written as
+    camelCase, not PascalCase (the first letter should be lowercase). Hungarian
+    notation is encouraged when naming variables to prevent ambiguity without
+    having extremely long names.
+        
+        // Bad,
+        // it should be named trianglePhysicalObject if
+        // you're intent on having a name this long.
+        var TrianglePhysicalObject = createPhysicalObject ();
+        
+        // Good,
+        // using po to indicate that we're holding a
+        // Physical Object will help avoid mistakes
+        var poTriangle = createPhysicalObject ();
+        
+      A quick guide to Hungarian notation
+      
+        boolean fVarName
+        number  nVarName
+        string  strVarName, zVarName
+        array   arrVarName, aVarName, pVarName
+        object  objVarName, oVarName
+        
+
+  B. Variable Declaration
+    
+      When declaring variables, all variables should be declared once, at the
+    top of the document. The keyword 'var' should only be used once, and commas
+    should be used between variables. When necessary, initialize variables, it
+    can help clarify what they're being used for and what hungarian notation
+    might be being used.
+    
+      // Bad
+      var oneVariable;
+      var anotherVariable;
+      
+      oneVariable     = createVariable ();
+      anotherVariable = createVariable ();
+      
+      //Good
+      var oneVariable     = createVariable (),
+          anotherVariable = createVariable ();
+    
+2. Operators
+  A. Parenthesis and Braces
+  
+      Left parenthesis should be preceded by at least one space unless preceded
+    by a logical operator or being used in a function call with no parameters.
+    Function calls on adjacent lines should line up on the left parenthesis of
+    the parameter list.
+      
+      //Bad
+      if(!(element in array))
+      
+      //Acceptable
+      if (! (element in array))
+      
+      //Good
+      if (!(element in array))
+        
+      //Bad
+      someFunction();
+      someOtherFunction();
+      anotherFunction(parameter);
+      
+      //Good
+      someFunction      ();
+      someOtherFunction ();
+      anotherFunction   (parameter);
+  
+      Braces for loops, ifs and long object literal should open on the same
+    line as the loop, if or assignment operator.
+    
+      //Bad
+      if (something)
+      {
+        stuff();
+        otherStuff();
+        
